@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+
 public class WorldBorderUtil implements Listener {
     private final WorldExpansion plugin;
     private final Map<String, WorldBorder> worldBorders = new HashMap<>();
@@ -46,6 +47,7 @@ public class WorldBorderUtil implements Listener {
 
     private boolean evenWorldBorder;
     private double bonusExpansionFactor;
+    private double worldBorderMultiplier;
 
     private double worldBorderSpeedFactor;
 
@@ -82,6 +84,7 @@ public class WorldBorderUtil implements Listener {
         // Add default values for general settings
         config.addDefault("evenWorldBorder", false);
         config.addDefault("bonusExpansionFactor", 0.2);
+        config.addDefault("worldBorderMultiplier", 1.0);
         config.addDefault("worldBorderSpeedFactor", 7.0);
         config.addDefault("warningDistanceFactor", 7.0);
         config.addDefault("maxWarningDistance", 5);
@@ -89,6 +92,9 @@ public class WorldBorderUtil implements Listener {
         config.addDefault("damageBuffer", 1.0);
         config.addDefault("spawnX", 0);
         config.addDefault("spawnZ", 0);
+
+        config.addDefault("worldStartSize", 10.0);
+        config.addDefault("worldMinSize", 8.0);
 
         // Get all available worlds from Bukkit
         List<String> availableWorlds = Bukkit.getWorlds().stream()
@@ -103,13 +109,16 @@ public class WorldBorderUtil implements Listener {
             config.createSection("worldBorders");
         }
 
+        double worldStartSize = config.getDouble("worldStartSize");
+        double worldMinSize = config.getDouble("worldMinSize");
+
         // Initialize border settings for each world
         ConfigurationSection worldBordersSection = config.getConfigurationSection("worldBorders");
         for (String worldName : availableWorlds) {
             if (!worldBordersSection.contains(worldName)) {
                 worldBordersSection.createSection(worldName);
-                worldBordersSection.set(worldName + ".size", 10.0);
-                worldBordersSection.set(worldName + ".minSize", 8.0);
+                worldBordersSection.set(worldName + ".size", worldStartSize);
+                worldBordersSection.set(worldName + ".minSize", worldMinSize);
             }
         }
 
@@ -134,6 +143,7 @@ public class WorldBorderUtil implements Listener {
         // Load general settings
         evenWorldBorder = config.getBoolean("evenWorldBorder");
         bonusExpansionFactor = config.getDouble("bonusExpansionFactor");
+        worldBorderMultiplier = config.getDouble("worldBorderMultiplier");
         worldBorderSpeedFactor = config.getDouble("worldBorderSpeedFactor");
         warningDistanceFactor = config.getDouble("warningDistanceFactor");
         maxWarningDistance = config.getInt("maxWarningDistance");
@@ -190,7 +200,7 @@ public class WorldBorderUtil implements Listener {
         if (wb == null) return;
 
         double minSize = worldBorderMinSizes.get(worldName);
-        double newSize = Math.max(wb.getSize() + blocks, minSize);
+        double newSize = Math.max(wb.getSize() + blocks * worldBorderMultiplier, minSize);
         if (evenWorldBorder) {
             newSize = Math.round(newSize / 2) * 2;
         }
