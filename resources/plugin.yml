@@ -1,0 +1,4 @@
+name: WorldExpansion
+version: '${project.version}'
+main: worldexpansion.worldexpansion.WorldExpansion
+api-version: '1.20'

@@ -3,6 +3,7 @@ package worldexpansion.worldexpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import worldexpansion.worldexpansion.util.WorldBorderUtil;
+import java.io.File;
 
 public final class WorldExpansion extends JavaPlugin {
 
@@ -14,7 +15,7 @@ public final class WorldExpansion extends JavaPlugin {
             Bukkit.getLogger().info("[WorldExpansion] Activating plugin...");
 
             // Initialize configuration and utilities
-            saveDefaultConfig();
+            createDefaultConfig();
             initializeWorldBorderUtil();
 
             Bukkit.getLogger().info("[WorldExpansion] Plugin activated successfully!");
@@ -41,5 +42,11 @@ public final class WorldExpansion extends JavaPlugin {
         worldBorderUtil = new WorldBorderUtil(this);
 
         Bukkit.getLogger().info("[WorldExpansion] WorldBorderUtil initialized successfully!");
+    }
+
+    private void createDefaultConfig() {
+        if (!new File(getDataFolder(), "config.yml").exists()) {
+            saveDefaultConfig();
+        }
     }
 }
