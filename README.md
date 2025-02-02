@@ -1,5 +1,6 @@
 # World-Border-Expansion
-A fun plugin that expands your world border when something dies!
+A fast and lightweight plugin that expands the world border when a mob dies!
+Start off in a small world, and slowly expand your world to gather materials!
 <br />
 <br />
 
